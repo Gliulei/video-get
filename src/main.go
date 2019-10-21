@@ -28,30 +28,44 @@ func getHeader(url string) {
 		return
 	}
 
+	ch := make(chan string) // 实例化一个管道
+
 	cnt := 10;
 	data := response.Header
 	length, err := strconv.Atoi(data["Content-Length"][0]);
 	log.Println("content-length:", length)
-	return
 	avg_length := length / cnt;
 	for i := 0; i < cnt; i++ {
 		start := i*avg_length;
 		if i == (cnt - 1) {
-			end := length - start;
+			end := length;
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			save(url, name, scope)
+			go save(url, name, scope, ch)
 		} else {
 			end := start + avg_length - 1
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			save(url, name, scope)
+			go save(url, name, scope, ch)
 		}
 
 
 	}
+
+	j := 1
+	for {
+		str := <- ch
+		println(str)
+
+		if j >= cnt{
+			close(ch)
+			break
+		}
+		j++
+	}
+
 
 	log.Println("finish")
 
@@ -61,7 +75,7 @@ func getHeader(url string) {
 }
 
 //下载video
-func save(url string, name string, scope string) {
+func save(url string, name string, scope string, c chan string) {
 	log.Println(scope)
 
 	//return
@@ -90,4 +104,5 @@ func save(url string, name string, scope string) {
 
 	defer video.Close()
 	video.Write(data)
+	c <- name
 }
