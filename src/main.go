@@ -21,6 +21,7 @@ func download() {
 }
 
 func getHeader(url string) {
+	log.Println("start")
 	response, err := http.Head(url)
 	if err != nil {
 		log.Println("get url failed:", err)
@@ -30,33 +31,43 @@ func getHeader(url string) {
 	cnt := 10;
 	data := response.Header
 	length, err := strconv.Atoi(data["Content-Length"][0]);
+	log.Println("content-length:", length)
+	return
 	avg_length := length / cnt;
 	for i := 0; i < cnt; i++ {
 		start := i*avg_length;
 		if i == (cnt - 1) {
 			end := length - start;
+			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
+			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			log.Println("start:", start)
-			log.Println("end:", end)
+			save(url, name, scope)
 		} else {
-			end := start + avg_length
+			end := start + avg_length - 1
+			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
+			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			log.Println("start:", start)
-			log.Println("end:", end)
+			save(url, name, scope)
 		}
+
+
 	}
 
-	log.Println("header:", avg_length)
+	log.Println("finish")
+
+	//log.Println("header:", avg_length)
 	log.Println("content-length:", data["Content-Length"])
 
 }
 
 //下载video
-func save(url string, name string) {
-	log.Println(url)
+func save(url string, name string, scope string) {
+	log.Println(scope)
 
+	//return
 	req, err := http.NewRequest("GET",url,nil)
-	req.Header.Add("Range:" , "0-10")
+	req.Header.Add("Range" , scope)
+	//log.Println(req.Header)
 	response, err := (&http.Client{}).Do(req)
 	if err != nil {
 		log.Println("get url failed:", err)
@@ -70,7 +81,7 @@ func save(url string, name string) {
 		log.Println("read data failed:", url, err)
 		return
 	}
-	filename := "/Users/MOMO/my/go/video-get/movie/" + name + ".mp4";
+	filename := "/tmp/movie/" + name + ".mp4";
 	video, err := os.Create(filename)
 	if err != nil {
 		log.Println("create file failed:", filename, err)
@@ -79,5 +90,4 @@ func save(url string, name string) {
 
 	defer video.Close()
 	video.Write(data)
-	log.Println("finish")
 }
