@@ -42,19 +42,19 @@ func getHeader(url string) {
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			save(url, name, scope, ch)
+			go save(url, name, scope, ch)
 		} else {
 			end := start + avg_length - 1
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			save(url, name, scope, ch)
+			go save(url, name, scope, ch)
 		}
 
 
 	}
 
-	/*j := 1
+	j := 1
 	for {
 		str := <- ch
 		println(str)
@@ -64,7 +64,7 @@ func getHeader(url string) {
 			break
 		}
 		j++
-	}*/
+	}
 
 
 	log.Println("finish")
@@ -104,5 +104,5 @@ func save(url string, name string, scope string, c chan string) {
 
 	defer video.Close()
 	video.Write(data)
-	//c <- name
+	c <- name
 }
