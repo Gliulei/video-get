@@ -42,13 +42,13 @@ func getHeader(url string) {
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			go save(url, name, scope, ch)
+			go save(url, name, scope)
 		} else {
 			end := start + avg_length - 1
 			name := strconv.Itoa(start) + "-" + strconv.Itoa(end)
 			scope := "bytes="+strconv.Itoa(start) + "-" + strconv.Itoa(end)
 
-			go save(url, name, scope, ch)
+			go save(url, name, scope)
 		}
 
 
