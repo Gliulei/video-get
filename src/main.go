@@ -15,8 +15,8 @@ func main() {
 //解析图片url
 func download() {
 	url := "https://zao.momocdn.com/tmpvideo/3E/DA/3EDAB17F-E24D-6B80-528B-6D3E6313A1F820191018.mp4";
-	getHeader(url);
-	//save(url,"video_test")
+	//getHeader(url);
+	save(url,"video_test", "0-10")
 
 }
 
@@ -75,12 +75,12 @@ func getHeader(url string) {
 }
 
 //下载video
-func save(url string, name string, scope string, c chan string) {
+func save(url string, name string, scope string) {
 	log.Println(scope)
 
 	//return
 	req, err := http.NewRequest("GET",url,nil)
-	req.Header.Add("Range" , scope)
+	//req.Header.Add("Range" , scope)
 	//log.Println(req.Header)
 	response, err := (&http.Client{}).Do(req)
 	if err != nil {
@@ -104,5 +104,5 @@ func save(url string, name string, scope string, c chan string) {
 
 	defer video.Close()
 	video.Write(data)
-	c <- name
+	//c <- name
 }
