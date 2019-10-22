@@ -17,7 +17,7 @@ func download() {
 	url := "https://zao.momocdn.com/tmpvideo/3E/DA/3EDAB17F-E24D-6B80-528B-6D3E6313A1F820191018.mp4";
 	//getHeader(url);
 	save(url,"video_test", "0-10")
-
+	log.Println("finish")
 }
 
 func getHeader(url string) {
