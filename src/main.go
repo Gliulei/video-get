@@ -30,7 +30,7 @@ func getHeader(url string) {
 
 	ch := make(chan string) // 实例化一个管道
 
-	cnt := 10;
+	cnt := 4;
 	data := response.Header
 	length, err := strconv.Atoi(data["Content-Length"][0]);
 	log.Println("content-length:", length)
